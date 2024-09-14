@@ -25,6 +25,8 @@ GtkWidget *create_search_bar(SearchParam *search_param)
     g_signal_connect(entry, "search-changed", G_CALLBACK(search_changed_cb), search_param);
     g_signal_connect(entry, "activate", G_CALLBACK(activate_cb), search_param->list_store);
 
+    search_param->apps = g_app_info_get_all();
+
     filter_app_list(search_param->apps, search_param->list_store, "");
 
     return entry;

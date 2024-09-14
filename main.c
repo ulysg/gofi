@@ -64,7 +64,7 @@ static void activate_cb(GtkApplication *app)
 
     SearchParam *search_param = malloc(sizeof(SearchParam));
     search_param->list_store = app_list.list_store;
-    search_param->apps = g_app_info_get_all();
+    search_param->apps = NULL;
 
     GtkWidget *search_bar = create_search_bar(search_param);
 
