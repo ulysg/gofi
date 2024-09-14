@@ -2,9 +2,6 @@
 #include <gtk4-layer-shell.h>
 
 #include "app_list.h"
-#include "gdk/gdk.h"
-#include "gtk/gtk.h"
-#include "gtk/gtkcssprovider.h"
 #include "search_bar.h"
 
 static gboolean key_press_cb(GtkEventControllerKey* controller, guint keyval, guint keycode, GdkModifierType state, gpointer unused)
@@ -64,7 +61,12 @@ static void activate_cb(GtkApplication *app)
     gtk_style_context_add_provider(context,(GtkStyleProvider*) provider, GTK_STYLE_PROVIDER_PRIORITY_USER);
 
     AppList app_list = create_app_list();
-    GtkWidget *search_bar = create_search_bar(&app_list);
+
+    SearchParam *search_param = malloc(sizeof(SearchParam));
+    search_param->list_store = app_list.list_store;
+    search_param->apps = g_app_info_get_all();
+
+    GtkWidget *search_bar = create_search_bar(search_param);
 
     GtkWidget *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 12);
 
@@ -81,15 +83,13 @@ static void activate_cb(GtkApplication *app)
     gtk_window_set_default_size(GTK_WINDOW(window), 400, 300);
     gtk_window_set_child(GTK_WINDOW(window), box);
     gtk_window_present(GTK_WINDOW(window));
-
-    filter_app_list(app_list.list_store, "");
 }
 
 int main(int argc, char *argv[])
 {
     g_autoptr(AdwApplication) app = NULL;
 
-    app = adw_application_new("org.example.Hello", G_APPLICATION_DEFAULT_FLAGS);
+    app = adw_application_new("ch.ulys.gofi", G_APPLICATION_DEFAULT_FLAGS);
     g_signal_connect(app, "activate", G_CALLBACK(activate_cb), NULL);
 
     return g_application_run(G_APPLICATION(app), argc, argv);

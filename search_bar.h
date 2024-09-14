@@ -2,6 +2,11 @@
 
 #include <adwaita.h>
 
-#include "app_list.h"
+typedef struct
+{
+    GListStore *list_store;
+    GList *apps;
+}
+SearchParam;
 
-GtkWidget *create_search_bar(AppList *app_list);
+GtkWidget *create_search_bar(SearchParam *search_param);

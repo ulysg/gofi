@@ -67,11 +67,9 @@ AppList create_app_list()
     return app_list;
 }
 
-void filter_app_list(GListStore *list_store, const char *match)
+void filter_app_list(GList *apps, GListStore *list_store, const char *match)
 {
     g_list_store_remove_all(list_store);
-
-    GList *apps = g_app_info_get_all();
 
     for (GList *app = apps; app != NULL; app = app->next)
     {

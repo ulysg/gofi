@@ -1,11 +1,11 @@
+#include "search_bar.h"
+
 #include "app_list.h"
-#include "gio/gio.h"
-#include "gtk/gtk.h"
 
 static void search_changed_cb(GtkSearchEntry *entry, gpointer data)
 {
-    GListStore *list_store = G_LIST_STORE(data);
-    filter_app_list(list_store, gtk_editable_get_text(GTK_EDITABLE(entry)));
+    SearchParam *search_param = (SearchParam *) data;
+    filter_app_list(search_param->apps, search_param->list_store, gtk_editable_get_text(GTK_EDITABLE(entry)));
 }
 
 static void activate_cb(GtkSearchEntry *entry, gpointer data)
@@ -19,11 +19,13 @@ static void activate_cb(GtkSearchEntry *entry, gpointer data)
     g_application_quit(g_application_get_default());
 }
 
-GtkWidget *create_search_bar(AppList *app_list)
+GtkWidget *create_search_bar(SearchParam *search_param)
 {
     GtkWidget *entry = gtk_search_entry_new();
-    g_signal_connect(entry, "search-changed", G_CALLBACK(search_changed_cb), app_list->list_store);
-    g_signal_connect(entry, "activate", G_CALLBACK(activate_cb), app_list->list_store);
+    g_signal_connect(entry, "search-changed", G_CALLBACK(search_changed_cb), search_param);
+    g_signal_connect(entry, "activate", G_CALLBACK(activate_cb), search_param->list_store);
+
+    filter_app_list(search_param->apps, search_param->list_store, "");
 
     return entry;
 }
